@@ -22,6 +22,15 @@ module BetterHtml
           assert_predicate errors, :empty?
         end
 
+        test "allow module type" do
+          errors = validate(<<-EOF).errors
+            <script type="module">
+            </script>
+          EOF
+
+          assert_predicate errors, :empty?
+        end
+
         test "disallowed script types" do
           errors = validate(<<-EOF).errors
             <script type="text/bogus">
@@ -30,7 +39,7 @@ module BetterHtml
 
           assert_equal 1, errors.size
           assert_equal 'type="text/bogus"', errors.first.location.source
-          assert_equal "text/bogus is not a valid type, valid types are text/javascript, text/template, text/html", errors.first.message
+          assert_equal "text/bogus is not a valid type, valid types are text/javascript, text/template, text/html, module", errors.first.message
         end
 
         private
